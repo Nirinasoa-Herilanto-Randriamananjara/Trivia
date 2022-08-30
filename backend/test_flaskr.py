@@ -100,12 +100,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['question'])
         
     def test_delete_question(self):
-        res = self.client().delete('/questions/22')
+        res = self.client().delete('/questions/20')
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 22)
+        self.assertEqual(data['deleted'], 20)
         
     def test_404_retrieves_questions_not_found(self):
         res = self.client().get('/questions?page=5')
