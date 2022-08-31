@@ -46,6 +46,11 @@ class TriviaTestCase(unittest.TestCase):
             "previous_questions": [],
             "quiz_category": {"type":"Art", "id": "2"}
         }
+        
+        self.new_wrong_quizzes = {
+            "previous_questions": [],
+            "quiz_category": {"type":"dfds", "id": "10"}
+        }
     
     def tearDown(self):
         """Executed after reach test"""
@@ -146,6 +151,14 @@ class TriviaTestCase(unittest.TestCase):
         
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
+        
+    def test_422_unprocessable_play_games_with_wrong_categorie(self):
+        res = self.client().post('/quizzes', json=self.new_wrong_quizzes)
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "unprocessable")
         
     def test_422_unprocessable_play_games(self):
         res = self.client().post('/quizzes', json={})
