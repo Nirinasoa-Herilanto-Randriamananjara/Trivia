@@ -43,8 +43,11 @@ class TriviaTestCase(unittest.TestCase):
         }
         
         self.quizzes = {
-            "previous_questions": [],
-            "quiz_category": {"type":"Art", "id": "2"}
+            "previous_questions": [17],
+            "quiz_category": {
+                "type":"Art",
+                "id": "2"
+            }
         }
         
         self.new_wrong_quizzes = {
