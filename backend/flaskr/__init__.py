@@ -101,9 +101,12 @@ def create_app(test_config=None):
             answer = body.get("answer", None)
             categorie = body.get("category", None)
             difficulty = body.get("difficulty", None)
-            search_term = body.get("searchTerm")
+            search_term = body.get("searchTerm", None)
             
-            if search_term:
+            if 'searchTerm' in body:
+                if search_term == "":
+                    abort(422)
+                
                 results = Question.query.order_by(Question.id).filter(Question.question.ilike("%" + search_term + "%")).all()
                 
                 data = [result.format() for result in results]
@@ -114,8 +117,11 @@ def create_app(test_config=None):
                     "current_category": "All",
                     "total_questions": len(data)
                 })
-                
+            
             else:
+                if question == "" or answer == "":
+                    abort(422)
+                
                 new_question = Question(
                     question=question,
                     answer=answer,
@@ -156,18 +162,18 @@ def create_app(test_config=None):
         try:
             body = request.get_json()
             
-            print(body)
-            
             previous_questions = body.get('previous_questions')
             quiz_category = body.get('quiz_category')
             
-            if  quiz_category['id'] != 0 and quiz_category != "":
+            if 'previous_questions' not in body and 'quiz_category' not in body:
+                abort(422)
+            
+            if  quiz_category['id'] != 0 and quiz_category['type'] != "click":
                 all_questions = Question.query.filter_by(category=quiz_category['id']).filter(Question.id.not_in(previous_questions)).all()
                 data = [question.format() for question in all_questions]
                 
                 # generate random question
                 question = random.choice(data) if len(data) != 0 else None
-                
                 return jsonify({
                     "success": True,
                     "question": question
