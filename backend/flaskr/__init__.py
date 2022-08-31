@@ -169,6 +169,12 @@ def create_app(test_config=None):
                 abort(422)
             
             if  quiz_category['id'] != 0 and quiz_category['type'] != "click":
+                
+                categorie = Category.query.get(quiz_category['id'])
+                
+                if categorie is None:
+                    abort(422)
+                    
                 all_questions = Question.query.filter_by(category=quiz_category['id']).filter(Question.id.not_in(previous_questions)).all()
                 data = [question.format() for question in all_questions]
                 
